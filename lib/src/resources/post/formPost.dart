@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mxh/model/post.dart';
 
 class ViewFormPost extends StatefulWidget {
-  ViewFormPost({Key? key}) : super(key: key);
   @override
   State<ViewFormPost> createState() => _ViewFormPostState();
 }

@@ -10,6 +10,13 @@ class Like {
   static const typeSad = 4;
   static const typeWow = 5;
   static const typeAngry = 6;
+  static const typeNotLikeString = "0";
+  static const typeLikeString = "1";
+  static const typeFavoriteString = "2";
+  static const typeSmileString = "3";
+  static const typeSadString = "4";
+  static const typeWowString = "5";
+  static const typeAngryString = "6";
   Like (
     int id,
     int type,
@@ -42,4 +49,10 @@ class Like {
     };
   }
   int get getType => _type;
+
+  set setTypeString(String type) {
+    _type = int.parse(type);
+    print(_type);
+  }
+
 }

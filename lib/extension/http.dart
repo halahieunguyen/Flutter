@@ -5,11 +5,10 @@ extension IsOk on http.Response {
     return (statusCode ~/ 100) == 2;
   }
 }
-  String host = "https://863d-42-118-39-142.ap.ngrok.io/";
+  String host = "https://890d-1-55-142-117.ap.ngrok.io/";
   String hostApi = host + "api/";
   String hostImg = host + "tmp_images/";
   Future<http.Response> post(String url, Map<String, dynamic> data) async{
-    print(data);
     final prefs = await SharedPreferences.getInstance();
     final access_token = prefs.getString('access_token') ?? null;
     // token = localStorage.getItem("token");
@@ -23,16 +22,14 @@ extension IsOk on http.Response {
     return res;
   }
 
-  Future<http.Response> get(String url, Map<String, dynamic> queryParam) async{
+  Future<http.Response> get(String url, Map<String, dynamic> queryParam) async {
     final prefs = await SharedPreferences.getInstance();
     final access_token = prefs.getString('access_token') ?? null;
     Map<String, String> header = {};
     if (access_token != null) header = { 'Authorization': "Bearer $access_token"};
-
     var res = await http.get(
       Uri.parse(hostApi + url).replace(queryParameters: queryParam),
       headers: header,
     );
-    print(res);
     return res;
   }

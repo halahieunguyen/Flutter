@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_button/flutter_reactive_button.dart';
 import 'package:mxh/model/post.dart';
 import 'package:mxh/model/like.dart';
 import 'package:mxh/src/resources/user/viewUserOptimize.dart';
@@ -16,13 +17,39 @@ class _ViewPostState extends State<ViewPost> {
   _ViewPostState(Post post) {
      this._post = post;
   }
+  List<ReactiveIconDefinition> _facebook = <ReactiveIconDefinition>[
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/like.gif',
+      code: Like.typeLikeString,
+    ),
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/love.gif',
+      code: Like.typeFavoriteString,
+    ),
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/haha.gif',
+      code: Like.typeSmileString,
+    ),
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/sad.gif',
+      code: Like.typeSadString,
+    ),
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/wow.gif',
+      code: Like.typeWowString,
+    ),
+    ReactiveIconDefinition(
+      assetIcon: 'assets/images/angry.gif',
+      code: Like.typeAngryString,
+    ),
+  ];
   late Post _post;
   @override
   void initState() {
   }
   @override
   Widget build(BuildContext context) {
-    Widget ViewTypeLike(Like? isLike) {
+Widget ViewTypeLike(Like? isLike) {
       if (isLike != null) {
         switch(isLike.getType) {
           case Like.typeLike:
@@ -33,31 +60,51 @@ class _ViewPostState extends State<ViewPost> {
             );
           case Like.typeFavorite:
              return Row(children: [
-                    Text("❤️", style: TextStyle(fontSize: 20),),
+                    Image.asset(
+                    'assets/images/love.png',
+                    width: 25.0,
+                    height: 25.0,
+                  ),
                     Text(" Yêu thích"),
                   ],
                   );
           case Like.typeSmile:
              return Row(children: [
-                    Text("😆", style: TextStyle(fontSize: 20),),
+                    Image.asset(
+                    'assets/images/haha.png',
+                    width: 25.0,
+                    height: 25.0,
+                  ),
                     Text(" Haha"),
                   ],
                   );
           case Like.typeSad:
              return Row(children: [
-                    Text("😢", style: TextStyle(fontSize: 20),),
+                    Image.asset(
+                    'assets/images/sad.png',
+                    width: 25.0,
+                    height: 25.0,
+                  ),
                     Text(" Buồn"),
                   ],
                   );
           case Like.typeWow:
              return Row(children: [
-                    Text("😯", style: TextStyle(fontSize: 20),),
+                    Image.asset(
+                    'assets/images/wow.png',
+                    width: 25.0,
+                    height: 25.0,
+                  ),
                     Text(" Wow"),
                   ],
                   );
           case Like.typeAngry:
              return Row(children: [
-                    Text("😠", style: TextStyle(fontSize: 20),),
+                    Image.asset(
+                    'assets/images/angry.png',
+                    width: 25.0,
+                    height: 25.0,
+                  ),
                     Text(" Phẫn nộ"),
                   ],
                   );
@@ -65,11 +112,33 @@ class _ViewPostState extends State<ViewPost> {
 
       }
       return Row(children: [
-                    Icon(Icons.thumb_up_alt_outlined, size: 20, color: Colors.green),
-                    Text(" Thích"),
-                  ],
-                );
+            Icon(Icons.thumb_up_alt_outlined, size: 20, color: Colors.green),
+            Text(" Thích"),
+          ],
+        );
     }
+    Widget Reaction(Like? isLike) {
+      return  ReactiveButton(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                width: 40.0,
+                height: 40.0,
+                child: Center(
+                  child:  ViewTypeLike(isLike),
+                ),
+              ),
+              icons: _facebook, //_flags,
+              onSelected: (ReactiveIconDefinition button) {
+                setState(() {
+                  _post.setIsLike = button.code;
+                });
+              },
+            iconWidth: 32.0,
+        );
+      }
+
     Widget ComponentInteractive() {
       return  Container(
         child: Container(
@@ -81,7 +150,7 @@ class _ViewPostState extends State<ViewPost> {
                   onLongPress:() =>_showListReact()// won't trigger
                   ,
                   child: Container(
-                    child:  ViewTypeLike(_post.getIsLike),
+                    child:  Reaction(_post.getIsLike),
                   ),
                 ),
               ),
@@ -178,27 +247,27 @@ class _ViewPostState extends State<ViewPost> {
                     ComponentInteractive(),
                   ]
                 ),
-                Positioned(
-                left: 0,
-                top: -20,
-                child: Container(
-                  width: 200,
-                  height: 80.0,
-                  // child:  Visibility(
-                          // visible: true,
-                          child: (Row (
-                            children: [
-                              Icon(Icons.thumb_up_alt, size: 20, color: Colors.green),
-                              Text("❤️", style: TextStyle(fontSize: 20),),
-                              Text("😆", style: TextStyle(fontSize: 20),),
-                              Text("😢", style: TextStyle(fontSize: 20),),
-                              Text("😯", style: TextStyle(fontSize: 20),),
-                              Text("😠", style: TextStyle(fontSize: 20),),
-                            ]
-                          )),
-                        // ),
-                  )
-                ),
+                // Positioned(
+                // left: 0,
+                // top: -20,
+                // child: Container(
+                //   width: 200,
+                //   height: 80.0,
+                //   // child:  Visibility(
+                //           // visible: true,
+                //           child: (Row (
+                //             children: [
+                //               Icon(Icons.thumb_up_alt, size: 20, color: Colors.green),
+                //               Text("❤️", style: TextStyle(fontSize: 20),),
+                //               Text("😆", style: TextStyle(fontSize: 20),),
+                //               Text("😢", style: TextStyle(fontSize: 20),),
+                //               Text("😯", style: TextStyle(fontSize: 20),),
+                //               Text("😠", style: TextStyle(fontSize: 20),),
+                //             ]
+                //           )),
+                //         // ),
+                //   )
+                // ),
 
                 ]
             )
@@ -210,5 +279,6 @@ class _ViewPostState extends State<ViewPost> {
   }
   void _showListReact() {
     print(1);
+
   }
 }

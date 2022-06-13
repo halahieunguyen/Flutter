@@ -4,7 +4,7 @@ import 'package:mxh/model/like.dart';
 import 'dart:convert';
 
 class Post {
-  int? _id;
+  late int _id;
   late User _user;
   User? _user2;
   Like? _isLike;
@@ -126,7 +126,7 @@ class Post {
   }
 
 
-int? get getId => _id;
+int get getId => _id;
 User get getUser => _user;
 User? get getUser2 => _user2;
 int? get getGroupId => _groupId;
@@ -140,5 +140,11 @@ int get getCountLike => _likeCount;
 int get getCountComment => _commentCount;
 int get getCountShare => _shareCount;
 Like? get getIsLike => _isLike;
-
+set setIsLike(String type) {
+  if (_isLike == null) {
+    int idFake = 100;
+    _isLike = new Like(idFake, int.parse(type), _user.getId, _id);
+  } else
+  _isLike?.setTypeString = type;
+}
 }

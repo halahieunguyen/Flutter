@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mxh/src/resources/home.dart';
 import 'package:mxh/src/resources/login.dart';
 import 'package:mxh/extension/http.dart' as httpMXH;
 import 'package:mxh/blocs/LoginBloc.dart';
 import 'package:mxh/validators/validate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingApp extends StatefulWidget {
   const LoadingApp({Key? key}) : super(key: key);
@@ -44,6 +47,8 @@ class _LoadingAppState extends State<LoadingApp> {
     print('------------------------------------');
     var response = await httpMXH.get('userInfo', {});
     if (response.ok) {
+       final prefs = await SharedPreferences.getInstance();
+      prefs.setString('userInfo', response.body);
       print(response.statusCode);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main()));
     } else {
