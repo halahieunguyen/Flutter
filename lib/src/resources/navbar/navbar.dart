@@ -17,7 +17,7 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar> {
   int selectedIndex = 0;
-  late User _user;
+  User? _user;
 
    @override initState() {
     super.initState();
@@ -26,8 +26,9 @@ class _NavbarState extends State<Navbar> {
 
   Future<void> getUserInfo() async {
      final prefs = await SharedPreferences.getInstance();
-     _user =  await User.ajaxOptimize(json.decode(prefs.getString('userInfo') ?? ''));
-     print(_user.getLastName);
+     setState(() {
+       this._user =   User.currentUser;
+     });
   }
   @override
   Widget build(BuildContext context) {
@@ -54,18 +55,18 @@ class _NavbarState extends State<Navbar> {
             label: "contacts",
           ),
           BottomNavigationBarItem(
-            icon: (_user.getAvatar != null)
-                ? Image.network(
-                  httpMXH.hostImg + _user.getAvatar,
-                  width: 96,
-                  height:96,
-                  fit:BoxFit.fill
+          label: "contacts",
+          icon: Container(
+            width: 30, height: 30,
+            child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+              child:  (_user?.getAvatar != null)
+              ? Image.network(
+                  httpMXH.hostImg + _user?.getAvatar,
                 )
-                : Image.asset('assets/images/nullAvatar.png',
-                width: 96,
-                  height:96,
-                  fit:BoxFit.fill),
-            label: "contacts",
+                : Image.asset('assets/images/nullAvatar.png'),
+              ),
+          ),
           ),
         ],
         onTap: (int index) {

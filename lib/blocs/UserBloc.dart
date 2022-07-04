@@ -109,4 +109,58 @@ class UserBloc {
     }
     return false;
   }
+
+  Future<dynamic> getUserInfo( int userId, Function onSuccess, Function(String) onError) async {
+    // List<User> listUser = <User>[];
+    Map<String, dynamic> options = {
+      'user_id': userId.toString(),
+    };
+
+    try {
+    var response = await httpMXH.get('user', options);
+    if (response.ok) {
+      var data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        if(data.containsKey('message')) {
+          onSuccess(data['message']);
+        }
+        return new User.ajaxOptimize(data['data']);
+      } else {
+          if (data.containsKey('message'))  onError(data['message']) ;
+      }
+    } else {
+      onError("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+    throw Exception;
+    } catch (Exception) {
+      onError("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+  }
+
+  Future<dynamic> getCountFollowed( int userId, Function onSuccess, Function(String) onError) async {
+    // List<User> listUser = <User>[];
+    Map<String, dynamic> options = {
+      'user_id': userId.toString(),
+    };
+
+    try {
+    var response = await httpMXH.get('relationship/count_followed', options);
+    if (response.ok) {
+      var data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        if(data.containsKey('message')) {
+          onSuccess(data['message']);
+        }
+        return data['data'];
+      } else {
+          if (data.containsKey('message'))  onError(data['message']) ;
+      }
+    } else {
+      onError("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+    throw Exception;
+    } catch (Exception) {
+      onError("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+  }
 }

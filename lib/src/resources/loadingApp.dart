@@ -8,6 +8,8 @@ import 'package:mxh/blocs/LoginBloc.dart';
 import 'package:mxh/validators/validate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../model/user.dart';
+
 class LoadingApp extends StatefulWidget {
   const LoadingApp({Key? key}) : super(key: key);
 
@@ -48,8 +50,7 @@ class _LoadingAppState extends State<LoadingApp> {
     var response = await httpMXH.get('userInfo', {});
     if (response.ok) {
        final prefs = await SharedPreferences.getInstance();
-      prefs.setString('userInfo', response.body);
-      print(response.statusCode);
+       User.currentUser = new User.ajaxOptimize(json.decode(response.body));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main()));
     } else {
       print(response.statusCode);

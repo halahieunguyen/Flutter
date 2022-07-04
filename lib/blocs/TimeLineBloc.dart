@@ -26,11 +26,14 @@ class TimeLineBloc {
   Stream get emailStream => _page.stream;
 
 
-  Future<List<Post>> ajaxLoadListPost(int page,Function onSuccess, Function(String) onError) async {
+  Future<List<Post>> ajaxLoadListPost(int page,Function onSuccess, Function(String) onError, {int? userId,}) async {
     List<Post> listPost = <Post>[];
     Map<String, dynamic> options = {
       'page': page.toString()
     };
+    if (userId != null) {
+      options['user_id'] = userId.toString();
+    }
     if (_groupId != null) {
       options['group_id'] = _groupId.toString();
     }

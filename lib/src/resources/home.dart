@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mxh/src/resources/user/UserPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mxh/src/resources/navbar/navbar.dart';
 import 'package:mxh/src/resources/HomePage.dart';
 import 'package:mxh/src/resources/GroupPage.dart';
 import 'package:mxh/src/resources/FriendPage.dart';
+
+import '../../model/user.dart';
 
 class Main extends StatefulWidget {
 Main({Key? key}) : super(key: key);
@@ -24,7 +27,8 @@ class _MainState extends State<Main> {
       HomePage(),
       FriendPage(),
       GroupPage(),
-      FriendPage()
+      FriendPage(),
+      UserPage(User.currentUser?.getId),
     ];
      _pageController = PageController(initialPage: _selectedIndex ?? 0);
   }
