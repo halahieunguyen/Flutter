@@ -5,7 +5,7 @@ extension IsOk on http.Response {
     return (statusCode ~/ 100) == 2;
   }
 }
-  String host = "https://8f23-1-55-142-117.ap.ngrok.io/";
+  String host = "https://66f5-118-71-167-168.ap.ngrok.io/";
   String hostApi = host + "api/";
   String hostImg = host + "tmp_images/";
   Future<http.Response> post(String url, Map<String, dynamic> data) async{

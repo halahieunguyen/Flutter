@@ -8,7 +8,7 @@ import 'package:mxh/extension/http.dart' as httpMXH;
 import 'package:mxh/src/resources/dialog/MessageDialog.dart';
 import 'package:mxh/src/resources/post/ListImage.dart';
 import 'package:mxh/src/resources/user/itemListUser.dart';
-import '../../../blocs/TimeLineBloc.dart';
+import '../../../blocs/PostBloc.dart';
 import '../../../model/post.dart';
 import '../dialog/flashMessage.dart';
 import '../post/formPost.dart';
@@ -56,9 +56,9 @@ class _UserPageState extends State<UserPage> {
 
     super.initState();
   }
-  TimeLineBloc _timeLineBloc = new TimeLineBloc();
+  PostBloc _postBloc = new PostBloc();
    Future<void> ajaxLoadListPost(int page) async {
-       _listPost += await _timeLineBloc.ajaxLoadListPost(page, () {}, (msg) {
+       _listPost += await _postBloc.ajaxLoadListPost(page, () {}, (msg) {
           MessageDialog.showMessageDialog(context, 'Trang chủ', msg);
         }, userId: _userId);
       setState(() {

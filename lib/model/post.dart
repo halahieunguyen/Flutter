@@ -2,12 +2,14 @@ import 'package:intl/intl.dart';
 import 'package:mxh/model/user.dart';
 import 'package:mxh/model/like.dart';
 import 'dart:convert';
+import 'comment.dart';
 
 class Post {
   late int _id;
   late User _user;
   User? _user2;
   Like? _isLike;
+  List<Comment> _comments = <Comment>[];
   int? _groupId;
   int? _postId;
   int? _typePost;
@@ -19,26 +21,26 @@ class Post {
   int _shareCount = 0;
   int _commentCount = 0;
   List<String>? _srcImages;
+  bool stillComment = true;
   Post (
-  int id,
-  User user,
-  int typePost,
-  int typeShow,
-  DateTime createdAt,
-  DateTime updatedAt,
-  int shareCount,
-  int commentCount,
-  String? data,
-  List<String> srcImages,
-  int likeCount,
-  int userIdBrowse,
-  {
-    int? postId,
-    Like? isLike,
-    int? groupId,
-    User? user2,
-  }
-
+    int id,
+    User user,
+    int typePost,
+    int typeShow,
+    DateTime createdAt,
+    DateTime updatedAt,
+    int shareCount,
+    int commentCount,
+    String? data,
+    List<String> srcImages,
+    int likeCount,
+    int userIdBrowse,
+    {
+      int? postId,
+      Like? isLike,
+      int? groupId,
+      User? user2,
+    }
   ) {
     this._id = id;
     this._user = user;
@@ -79,7 +81,7 @@ class Post {
       this._user = new User.ajaxOptimize(options['user']);
     };
     if(options['user_id_2'] !=null) {
-      this._user = new User.ajaxOptimize(options['user_2']);
+      this._user2 = new User.ajaxOptimize(options['user_2']);
     };
     if(options['group_id']!=null) {
       this._groupId = options['group_id'];
@@ -140,11 +142,25 @@ int get getCountLike => _likeCount;
 int get getCountComment => _commentCount;
 int get getCountShare => _shareCount;
 Like? get getIsLike => _isLike;
+
+List<Comment> get getComments => _comments;
+void pushComments(List<Comment>? comments, {required int postId}) {
+  if (comments != null)
+  _comments += comments;
+}
+
+
 set setIsLike(String type) {
+  if (_isLike!= null &&_isLike?.getType != 0) {
+    this._likeCount--;
+  }
+   if (type != "0") {
+    this._likeCount++;
+  }
   if (_isLike == null) {
-    int idFake = 100;
+    int idFake = 0;
     _isLike = new Like(idFake, int.parse(type), _user.getId, _id);
   } else
-  _isLike?.setTypeString = type;
-}
+    _isLike?.setTypeString = type;
+  }
 }

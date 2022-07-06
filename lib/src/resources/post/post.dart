@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_button/flutter_reactive_button.dart';
 import 'package:mxh/model/post.dart';
 import 'package:mxh/model/like.dart';
+import 'package:mxh/src/resources/post/comment.dart';
 import 'package:mxh/src/resources/user/viewUserOptimize.dart';
 import 'package:intl/intl.dart';
+
+import '../../../blocs/PostBloc.dart';
+import '../dialog/MessageDialog.dart';
 class ViewPost extends StatefulWidget {
   ViewPost(Post post,{Key? key}) : super(key: key) {
    this._post = post;
@@ -17,6 +21,7 @@ class _ViewPostState extends State<ViewPost> {
   _ViewPostState(Post post) {
      this._post = post;
   }
+  PostBloc _postBloc = new PostBloc();
   List<ReactiveIconDefinition> _facebook = <ReactiveIconDefinition>[
     ReactiveIconDefinition(
       assetIcon: 'assets/images/like.gif',
@@ -130,10 +135,17 @@ Widget ViewTypeLike(Like? isLike) {
                 ),
               ),
               icons: _facebook, //_flags,
-              onSelected: (ReactiveIconDefinition button) {
+              onSelected: (ReactiveIconDefinition button) async {
                 setState(() {
                   _post.setIsLike = button.code;
                 });
+                bool like =  await _postBloc.likePost(_post.getId, "2",() {}, (msg) {
+                      setState(() {
+                        _post.setIsLike = Like.typeNotLikeString;
+                      });
+                      MessageDialog.showMessageDialog(context, 'Bài viết', msg);
+                    },
+                  );
               },
             iconWidth: 32.0,
         );
@@ -155,18 +167,21 @@ Widget ViewTypeLike(Like? isLike) {
                 ),
               ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  Icon(Icons.comment_outlined,size: 30, color: Colors.green),
-                  Text(" Bình luận"),
-                ],)
+                child: FlatButton(
+                  onPressed:()  => showComment(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Icon(Icons.comment_outlined,size: 20, color: Colors.green),
+                    Text(" Bình luận"),
+                  ],)
+                ),
               ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                  Icon(Icons.share_outlined, size: 30, color: Colors.green),
+                  Icon(Icons.share_outlined, size: 20, color: Colors.green),
                   Text(" Chia sẻ"),
                 ],)
               ),
@@ -277,8 +292,12 @@ Widget ViewTypeLike(Like? isLike) {
       )
     );
   }
-  void _showListReact() {
-    print(1);
+  Future<void> _showListReact() async {
 
+
+  }
+
+  Future<void> showComment() async {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ViewComment(_post)));
   }
 }

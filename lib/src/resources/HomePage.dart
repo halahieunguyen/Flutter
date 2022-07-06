@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'package:mxh/src/resources/post/formPost.dart';
 
-import '../../blocs/TimeLineBloc.dart';
+import '../../blocs/PostBloc.dart';
 import '../../model/post.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin<HomePage> {
   int _page = 1;
   bool loadingPage = false;
-  TimeLineBloc _timeLineBloc = new TimeLineBloc();
+  PostBloc _postBloc = new PostBloc();
   List<Post> _listPost = <Post>[];
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin
     );
   }
    Future<void> ajaxLoadListPost(int page) async {
-       _listPost += await _timeLineBloc.ajaxLoadListPost(page, () {}, (msg) {
+       _listPost += await _postBloc.ajaxLoadListPost(page, () {}, (msg) {
           MessageDialog.showMessageDialog(context, 'Trang chủ', msg);
         });
       setState(() {
