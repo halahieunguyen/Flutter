@@ -10,6 +10,7 @@ import 'package:mxh/src/resources/post/ListImage.dart';
 import 'package:mxh/src/resources/user/itemListUser.dart';
 import '../../../blocs/PostBloc.dart';
 import '../../../model/post.dart';
+import '../dialog/LoadingDialog.dart';
 import '../dialog/flashMessage.dart';
 import '../post/formPost.dart';
 import '../post/post.dart';
@@ -292,16 +293,7 @@ class _UserPageState extends State<UserPage> {
                   for (Post postItem in _listPost) ViewPost(postItem),
                 ]
               ),
-              if (loadingPage)  SizedBox(
-                width: 50, height: 50,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(
-                    color: Color.fromARGB(255, 203, 205, 214),
-                    strokeWidth: 2.0,
-                  ),
-                ),
-              ),
+              if (loadingPage) LoadingDialog.ajaxLoadListView(),
             ]
           )
         )

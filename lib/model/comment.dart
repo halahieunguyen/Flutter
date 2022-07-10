@@ -12,7 +12,7 @@ class Comment {
   bool stillComment = true;
 
   DateTime? _createdAt;
-  DateTime? _updatedAt;
+  late DateTime _updatedAt;
   Comment (
   int id,
   User user,
@@ -37,6 +37,9 @@ class Comment {
     };
 
     if(options['post_id']!=null) {
+      if (options['post_id'].runtimeType == String)
+      this._postId = int.parse(options['post_id']);
+      else
       this._postId = options['post_id'];
     };
 
@@ -60,6 +63,6 @@ int get getId => _id;
 User get getUser => _user;
 int? get getPostId => _postId;
 DateTime? get getCreatedAt => _createdAt;
-DateTime? get getUpdatedAt => _updatedAt;
+DateTime get getUpdatedAt => _updatedAt;
 String get getData => _data;
 }

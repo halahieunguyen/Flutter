@@ -5,6 +5,14 @@ import 'dart:convert';
 import 'comment.dart';
 
 class Post {
+  static const typeShow = {
+    'public': 1,
+    'friend': 2,
+    'private': 3,
+    'specific_friend': 4,
+    'friends_except': 5,
+  };
+
   late int _id;
   late User _user;
   User? _user2;
@@ -20,7 +28,7 @@ class Post {
   int _likeCount = 0;
   int _shareCount = 0;
   int _commentCount = 0;
-  List<String>? _srcImages;
+  List<String> _srcImages = <String>[];
   bool stillComment = true;
   Post (
     int id,
@@ -142,11 +150,21 @@ int get getCountLike => _likeCount;
 int get getCountComment => _commentCount;
 int get getCountShare => _shareCount;
 Like? get getIsLike => _isLike;
-
+List<String> get getSrcImages => _srcImages;
+set setId (int x) {
+  _id = x;
+}
 List<Comment> get getComments => _comments;
-void pushComments(List<Comment>? comments, {required int postId}) {
+void pushComments(List<Comment>? comments) {
   if (comments != null)
   _comments += comments;
+  if (_comments.length % 5 != 2) {
+    stillComment = false;
+  }
+}
+
+void createComment(Comment comment) {
+  _comments = [comment] + _comments;
 }
 
 

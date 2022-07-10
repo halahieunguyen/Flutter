@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_reactive_button/flutter_reactive_button.dart';
 import 'package:mxh/model/post.dart';
 import 'package:mxh/model/like.dart';
 import 'package:mxh/src/resources/post/comment.dart';
 import 'package:mxh/src/resources/user/viewUserOptimize.dart';
 import 'package:intl/intl.dart';
+import 'package:mxh/extension/http.dart' as httpMXH;
 
 import '../../../blocs/PostBloc.dart';
 import '../dialog/MessageDialog.dart';
@@ -252,6 +254,24 @@ Widget ViewTypeLike(Like? isLike) {
           Container(
             child: Text(_post.getData),
             padding: EdgeInsets.fromLTRB(15, 20, 50, 5),
+          ),
+          if (_post.getSrcImages.length > 0) ImageSlideshow(
+            width: double.infinity,
+            height: 200,
+            initialPage: 0,
+            indicatorColor: Colors.blue,
+            indicatorBackgroundColor: Colors.grey,
+            onPageChanged: (value) {
+              debugPrint('Page changed: $value');
+            },
+            isLoop: true,
+            children: [
+              for (var image in _post.getSrcImages)
+                Image.network(
+                  httpMXH.hostImg + image,
+                  fit: BoxFit.cover,
+                ),
+            ],
           ),
           Container(
             child: Stack(

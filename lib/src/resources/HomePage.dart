@@ -9,6 +9,7 @@ import 'package:mxh/src/resources/post/formPost.dart';
 
 import '../../blocs/PostBloc.dart';
 import '../../model/post.dart';
+import 'dialog/LoadingDialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,57 +18,66 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin<HomePage> {
+  final key = GlobalKey<AnimatedListState>();
   int _page = 1;
   bool loadingPage = false;
   PostBloc _postBloc = new PostBloc();
   List<Post> _listPost = <Post>[];
   @override
   void initState() {
-    ajaxLoadListPost(1);
+    ajaxLoadListPost();
     super.initState();
   }
+
+  void pushNewPost(Post post) {
+      List<Post> _listPost1;
+      _listPost1 = _listPost;
+
+      setState(() {
+      _listPost = <Post>[];
+      });
+      new Future.delayed(const Duration(milliseconds: 100), () {
+        setState(() {
+          _listPost = [post] + _listPost1;
+        });
+      });
+
+    }
+
   @override
   Widget build(BuildContext context) {
     return LazyLoadScrollView(
       onEndOfPage: () => {
         setState(() {
-          loadingPage = true;
-          _page++;
-          ajaxLoadListPost(_page);
+          ajaxLoadListPost();
         })
       },
       child: SingleChildScrollView(
       child: Column(children:
          [
             PaddingTop(),
-            ViewFormPost(),
+            ViewFormPost(pushNewPostCallBack: (Post post) => pushNewPost(post)),
             Column(
             mainAxisAlignment: MainAxisAlignment.start,
               children : [
                 for (Post postItem in _listPost) ViewPost(postItem),
               ]
             ),
-            if (loadingPage)  SizedBox(
-              width: 50, height: 50,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircularProgressIndicator(
-                  color: Color.fromARGB(255, 203, 205, 214),
-                  strokeWidth: 2.0,
-                ),
-              ),
-            ),
+            if (loadingPage) LoadingDialog.ajaxLoadListView(),
          ]
       ,)
       ),
     );
   }
-   Future<void> ajaxLoadListPost(int page) async {
-       _listPost += await _postBloc.ajaxLoadListPost(page, () {}, (msg) {
+   Future<void> ajaxLoadListPost() async {
+      if (loadingPage) return;
+      loadingPage = true;
+       _listPost += await _postBloc.ajaxLoadListPost(_page, () {}, (msg) {
           MessageDialog.showMessageDialog(context, 'Trang chủ', msg);
         });
       setState(() {
         _listPost;
+        _page++;
         loadingPage= false;
     });
   }

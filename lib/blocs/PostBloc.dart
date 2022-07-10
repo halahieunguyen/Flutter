@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:mxh/model/post.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,9 +48,7 @@ class PostBloc {
     if (response.ok) {
       var data = json.decode(response.body);
       if (data['status'] == 'success') {
-        print(data['data'].length);
         for (var item in data['data']) {
-          print(item);
             listPost.add(new Post.ajax(item));
         }
       } else {
@@ -71,7 +71,6 @@ class PostBloc {
     var response = await httpMXH.post('like', options);
     if (response.ok) {
       var data = json.decode(response.body);
-      print(data);
       if (data['status'] == 'success') {
        result = true;
       } else {
@@ -79,6 +78,104 @@ class PostBloc {
       }
     } else {
       onError("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+    return result;
+  }
+
+  Future<Post?> createPost({int? groupId,int? postId, int? userId2, int? typeShow, List<XFile>? images, String data = "", Function? onSuccess, Function(String)? onError}) async {
+    Post? result;
+    if (typeShow == null) typeShow = Post.typeShow['public'];
+    List<String> linkImages = <String>[];
+    if (images != null) {
+      var responseImg;
+      File? img;
+      Map dataImg;
+      for (XFile image in images) {
+        img = File(image!.path);
+        responseImg = await httpMXH.postImg('image/upload',  img);
+        if (responseImg.statusCode == 200) {
+          dataImg = json.decode(await responseImg.stream.bytesToString());
+          if (dataImg["status"] == 'success')
+          linkImages.add(dataImg['data']);
+        } else {
+          onError!("Upload ảnh thất bại.");
+          return result;
+        }
+      }
+    }
+    Map<String, dynamic> options = {
+      'data': data,
+      'type_show': typeShow.toString(),
+      // 'user_view_posts': json.encode([]),
+      'images' : json.encode(linkImages)
+    };
+    if (groupId != null) {
+      options['group_id'] = groupId.toString();
+    }
+    if (postId != null) {
+      options['post_id'] = postId.toString();
+    }
+    if (userId2 != null) {
+      options['user_id_2'] = userId2.toString();
+    }
+    var response = await httpMXH.post('post/create', options);
+
+    if (response.ok) {
+      var data = json.decode(response.body);
+      if (data['status'] == 'success') {
+       onSuccess!(data['message']);
+       result = new Post.ajax(data['data']);
+      } else {
+        onError!(data['message']);
+      }
+    } else {
+      onError!("Đã có lỗi xảy ra, vui lòng thử lại");
+    }
+    return result;
+  }
+
+  Future<Comment?> createComment({int? postId, int? commentId, List<XFile>? images, String data = "", Function? onSuccess, Function(String)? onError}) async {
+    Comment? result;
+    List<String> linkImages = <String>[];
+    if (images != null) {
+      var responseImg;
+      File? img;
+      Map dataImg;
+      for (XFile image in images) {
+        img = File(image!.path);
+        responseImg = await httpMXH.postImg('image/upload',  img);
+        if (responseImg.statusCode == 200) {
+          dataImg = json.decode(await responseImg.stream.bytesToString());
+          if (dataImg["status"] == 'success')
+          linkImages.add(dataImg['data']);
+        } else {
+          onError!("Upload ảnh thất bại.");
+          return result;
+        }
+      }
+    }
+    Map<String, dynamic> options = {
+      'data': data,
+      'images' : json.encode(linkImages)
+    };
+    if (commentId != null) {
+      options['comment_id'] = commentId.toString();
+    }
+    if (postId != null) {
+      options['post_id'] = postId.toString();
+    }
+    var response = await httpMXH.post('comment/create', options);
+
+    if (response.ok) {
+      var data = json.decode(response.body);
+      if (data['status'] == 'success') {
+       onSuccess!(data['message']);
+       result = new Comment.ajax(data['data']);
+      } else {
+        onError!(data['message']);
+      }
+    } else {
+      onError!("Đã có lỗi xảy ra, vui lòng thử lại");
     }
     return result;
   }
@@ -99,9 +196,7 @@ class PostBloc {
     var response = await httpMXH.get('comment/get', options);
     if (response.ok) {
       var data = json.decode(response.body);
-      print("----------------------------------------------------------------------");
-      print(data);
-      print(options);
+      onSuccess();
       if (data['status'] == 'success') {
        for (var item in data['data']) {
             listComment.add(new Comment.ajax(item));
