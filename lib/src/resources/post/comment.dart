@@ -79,7 +79,6 @@ class View_CommentState extends State<ViewComment> {
                       child: GestureDetector(
                         onTap: () { //here
                           FocusScope.of(context).unfocus();
-                          print(1000);
                         },
                         child:
                         Column(
@@ -123,6 +122,17 @@ class View_CommentState extends State<ViewComment> {
                                                     ),
                                                  ),
                                                ),
+                                              if (comment.getImage != null) Container(
+                                                padding: EdgeInsets.only(top: 8),
+                                                child: LimitedBox(
+                                                  maxWidth: MediaQuery.of(context).size.width / 2,
+                                                  maxHeight: MediaQuery.of(context).size.width / 2,
+                                                  child: Image.network(
+                                                    httpMXH.hostImg + (comment.getImage ??  ""),
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
                                               Row(
                                                 children: [
                                                   Text(DateFormat('HH:mm dd-MM-yyyy').format(comment.getUpdatedAt), overflow: TextOverflow.ellipsis,textAlign: TextAlign.left,),
@@ -291,21 +301,14 @@ class View_CommentState extends State<ViewComment> {
       },
       onSuccess: (msg) {
           FlashMessage.showMessageTop(context, msg);
+          _dataController.text = "";
+          _fileImage = null;
         }
     );
     if (comment != null) {
-      // List<Comment> comments1;
-      // comments1 = _post.getComments;
       setState(() {
-        print(_post.getComments.length);
         _post.createComment(comment);
-        print(_post.getComments.length);
       });
-      //  new Future.delayed(const Duration(milliseconds: 100), () {
-      //   setState(() {
-      //     comments = [comment] + comments1;
-      //   });
-      // });
     }
   }
   Future<void> cropImage() async {

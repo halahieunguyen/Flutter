@@ -8,6 +8,7 @@ class Comment {
   late int _postId;
   int? _commentId;
   late String _data;
+  String? _srcImage;
   List<Comment> _comments = <Comment>[];
   bool stillComment = true;
 
@@ -56,6 +57,13 @@ class Comment {
     if(options['data']!=null) {
       this._data = options['data'];
     };
+    if(options['src_images']!=null) {
+     var decode = jsonDecode(options['src_images']);
+      if (decode != "") {
+        this._srcImage = List.from(jsonDecode(options['src_images']))[0] ?? null;
+        print(this._srcImage);
+      }
+    };
   }
 
 
@@ -65,4 +73,5 @@ int? get getPostId => _postId;
 DateTime? get getCreatedAt => _createdAt;
 DateTime get getUpdatedAt => _updatedAt;
 String get getData => _data;
+String? get getImage => _srcImage;
 }

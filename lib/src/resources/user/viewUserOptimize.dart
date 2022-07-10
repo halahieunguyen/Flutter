@@ -18,6 +18,7 @@ class ViewUserOptimize extends StatelessWidget {
       return (_user.getAvatar != null)
       ? Image.network(
         httpMXH.hostImg + _user.getAvatar,
+        fit: BoxFit.fill,
       )
       : Image.asset('assets/images/nullAvatar.png');
     }
@@ -29,9 +30,13 @@ class ViewUserOptimize extends StatelessWidget {
         child:Row(
           children: [
 
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
-              child: getAvatar(),
+            Container(
+              width: 40,
+              height: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                child: getAvatar(),
+              ),
             ),
             Container(
               child: Column(
